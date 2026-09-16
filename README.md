@@ -4,6 +4,16 @@ Custom-Integration für Home Assistant, die Wechselrichter der **alten**
 Kostal-Piko-Serie (nicht Plenticore!) über deren lokale, unauthentifizierte
 JSON-Schnittstelle `/api/dxs.json` ausliest.
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=DEIN-GITHUB-NAME&repository=ha-kostal-piko&category=integration)
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal_piko)
+
+> **Wichtig:** Die beiden Buttons funktionieren erst, wenn `DEIN-GITHUB-NAME`
+> oben durch deinen tatsächlichen GitHub-Benutzernamen ersetzt wurde **und**
+> der Code unter genau diesem Namen/Repository auf GitHub veröffentlicht ist
+> (siehe Abschnitt „HACS – Voraussetzungen“ unten). Ohne echtes GitHub-Repo
+> zeigt HACS nichts zum Installieren an – das ist kein Fehler in Home
+> Assistant, sondern fehlt schlicht die Datenquelle.
+
 ## Kompatibilität
 
 Unterstützt werden alle Kostal-Piko-Wechselrichter mit Webserver-Version
@@ -69,12 +79,38 @@ eignen sich damit direkt für das **Energie-Dashboard** von Home Assistant.
 
 ### Über HACS (Custom Repository)
 
-1. HACS → Integrationen → Menü (⋮) → „Benutzerdefinierte Repositories“.
-2. Dieses Repository als Typ „Integration“ hinzufügen.
-3. „Kostal Piko (alte Serie / PIKO 10.1)“ installieren und Home Assistant
-   neu starten.
-4. Integration wie oben über **Einstellungen → Geräte & Dienste**
-   hinzufügen.
+#### Voraussetzungen
+
+HACS kann **nur echte, öffentliche GitHub-Repositories** laden. Die
+Buttons/Links oben funktionieren also erst, nachdem:
+
+1. Du ein eigenes **öffentliches** GitHub-Repository angelegt hast
+   (z. B. `ha-kostal-piko`).
+2. Der komplette Inhalt dieses ZIPs (inkl. `custom_components/kostal_piko/…`
+   und `hacs.json` im Repo-Root) dort hochgeladen/gepusht wurde.
+3. Du im Repo unter **Releases** mindestens **einen Release/Tag** erstellt
+   hast (z. B. `v1.0.0`). Ohne Release zeigt HACS das Repository zwar an,
+   aber es taucht nichts zum Herunterladen auf bzw. der Download-Button
+   bleibt inaktiv – das ist die häufigste Ursache für „es passiert nichts“.
+4. Optional: `codeowners`, `documentation` und `issue_tracker` in
+   `custom_components/kostal_piko/manifest.json` sowie die Owner/Repository-
+   Angaben in den Badges oben an deinen echten GitHub-Namen anpassen.
+
+#### Installation
+
+1. Ersten Badge-Link oben anklicken **oder** manuell: HACS → Menü (⋮
+   oben rechts) → „Benutzerdefinierte Repositories“ → URL
+   `https://github.com/DEIN-GITHUB-NAME/ha-kostal-piko` einfügen, Kategorie
+   **„Integration“** wählen, „Hinzufügen“ klicken.
+2. Das Repository in der HACS-Liste suchen/öffnen und über den
+   Download-Button (unten rechts) installieren.
+3. Home Assistant neu starten.
+4. Zweiten Badge-Link oben anklicken **oder** manuell: **Einstellungen →
+   Geräte & Dienste → Integration hinzufügen** → „Kostal Piko“ suchen.
+
+Falls du keine eigene GitHub-Veröffentlichung möchtest, überspringe HACS
+komplett und nutze die manuelle Installation oben – das Ergebnis ist
+funktional identisch, nur ohne automatische Update-Benachrichtigung.
 
 ## Einrichtung
 
