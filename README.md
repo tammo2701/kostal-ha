@@ -4,8 +4,8 @@ Custom-Integration für Home Assistant, die Wechselrichter der **alten**
 Kostal-Piko-Serie (nicht Plenticore!) über deren lokale, unauthentifizierte
 JSON-Schnittstelle `/api/dxs.json` ausliest.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=DEIN-GITHUB-NAME&repository=ha-kostal-piko&category=integration)
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal_piko)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tammo2701&repository=kostal-ha&category=integration)
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal)
 
 > **Wichtig:** Die beiden Buttons funktionieren erst, wenn `DEIN-GITHUB-NAME`
 > oben durch deinen tatsächlichen GitHub-Benutzernamen ersetzt wurde **und**
