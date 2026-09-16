@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kostal Piko Wechselrichter verbinden",
+        "description": "IP-Adresse oder Hostnamen des Wechselrichters eingeben. Benutzername/Passwort sind optional und werden nur für erweiterte Werte benötigt (Werksvorgabe: Benutzername „{default_username}“, Passwort „{default_password}“).",
+        "data": {
+          "host": "IP-Adresse oder Hostname",
+          "use_https": "HTTPS verwenden",
+          "username": "Benutzername (optional)",
+          "password": "Passwort (optional)",
+          "scan_interval": "Abfrageintervall (Sekunden)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Wechselrichter konnte nicht hergestellt werden.",
+      "invalid_auth": "Anmeldedaten wurden vom Wechselrichter abgelehnt.",
+      "unknown": "Unerwarteter Fehler."
+    },
+    "abort": {
+      "already_configured": "Dieser Wechselrichter ist bereits konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Abfrageintervall (Sekunden)"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Kostal Piko inverter",
+        "description": "Enter the IP address or hostname of the inverter. Username/password are optional and only needed for extended values (factory default: username \"{default_username}\", password \"{default_password}\").",
+        "data": {
+          "host": "IP address or hostname",
+          "use_https": "Use HTTPS",
+          "username": "Username (optional)",
+          "password": "Password (optional)",
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the inverter.",
+      "invalid_auth": "The inverter rejected the credentials.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This inverter is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    }
+  }
+}

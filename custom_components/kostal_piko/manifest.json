@@ -1,0 +1,12 @@
+{
+  "domain": "kostal_piko",
+  "name": "Kostal Piko (alte Serie / PIKO 10.1)",
+  "codeowners": ["@dein-github-name"],
+  "config_flow": true,
+  "documentation": "https://github.com/dein-github-name/ha-kostal-piko",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/dein-github-name/ha-kostal-piko/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
