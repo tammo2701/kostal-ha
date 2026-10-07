@@ -47,7 +47,7 @@ async def _validate_and_get_name(
 
     async with asyncio.timeout(10):
         async with session.get(
-            url, params={"dxsEntries": DXS_INVERTER_NAME}, auth=auth
+            url, params={"dxsEntries": DXS_INVERTER_NAME}, auth=auth, ssl=False
         ) as resp:
             resp.raise_for_status()
             payload = await resp.json(content_type=None)

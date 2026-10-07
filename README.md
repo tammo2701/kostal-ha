@@ -5,14 +5,10 @@ Kostal-Piko-Serie (nicht Plenticore!) über deren lokale, unauthentifizierte
 JSON-Schnittstelle `/api/dxs.json` ausliest.
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tammo2701&repository=kostal-ha&category=integration)
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal)
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal_piko)
 
-> **Wichtig:** Die beiden Buttons funktionieren erst, wenn `DEIN-GITHUB-NAME`
-> oben durch deinen tatsächlichen GitHub-Benutzernamen ersetzt wurde **und**
-> der Code unter genau diesem Namen/Repository auf GitHub veröffentlicht ist
-> (siehe Abschnitt „HACS – Voraussetzungen“ unten). Ohne echtes GitHub-Repo
-> zeigt HACS nichts zum Installieren an – das ist kein Fehler in Home
-> Assistant, sondern fehlt schlicht die Datenquelle.
+> **Hinweis:** HACS braucht ein öffentliches GitHub-Repository mit mindestens
+> einem Release/Tag (z. B. `v1.0.0`), sonst taucht nichts zum Herunterladen auf.
 
 ## Kompatibilität
 
@@ -100,7 +96,7 @@ Buttons/Links oben funktionieren also erst, nachdem:
 
 1. Ersten Badge-Link oben anklicken **oder** manuell: HACS → Menü (⋮
    oben rechts) → „Benutzerdefinierte Repositories“ → URL
-   `https://github.com/DEIN-GITHUB-NAME/ha-kostal-piko` einfügen, Kategorie
+   `https://github.com/tammo2701/kostal-ha` einfügen, Kategorie
    **„Integration“** wählen, „Hinzufügen“ klicken.
 2. Das Repository in der HACS-Liste suchen/öffnen und über den
    Download-Button (unten rechts) installieren.

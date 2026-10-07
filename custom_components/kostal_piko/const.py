@@ -28,6 +28,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import (
     PERCENTAGE,
+    EntityCategory,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfEnergy,
@@ -35,7 +36,6 @@ from homeassistant.const import (
     UnitOfPower,
     UnitOfTime,
 )
-from homeassistant.helpers.entity import EntityCategory
 
 DOMAIN = "kostal_piko"
 MANUFACTURER = "Kostal"

@@ -50,7 +50,7 @@ class KostalPikoCoordinator(DataUpdateCoordinator[dict[int, Any]]):
         params = [("dxsEntries", str(dxs_id)) for dxs_id in chunk]
         async with asyncio.timeout(REQUEST_TIMEOUT):
             async with self._session.get(
-                self._base_url, params=params, auth=self._auth
+                self._base_url, params=params, auth=self._auth, ssl=False
             ) as resp:
                 if resp.status in (401, 403):
                     raise UpdateFailed("Anmeldung am Wechselrichter wurde abgelehnt")
@@ -61,32 +61,38 @@ class KostalPikoCoordinator(DataUpdateCoordinator[dict[int, Any]]):
                 # Manche Piko-Firmwares liefern den Content-Type nicht
                 # korrekt als application/json.
                 payload = await resp.json(content_type=None)
-        return payload.get("dxsEntries", [])
+        if not isinstance(payload, dict):
+            return []
+        return payload.get("dxsEntries") or []
 
     async def _async_update_data(self) -> dict[int, Any]:
         results: dict[int, Any] = {}
         ids = list(ALL_DXS_IDS)
         chunks = [ids[i : i + CHUNK_SIZE] for i in range(0, len(ids), CHUNK_SIZE)]
 
-        try:
-            chunk_results = await asyncio.gather(
-                *(self._fetch_chunk(chunk) for chunk in chunks)
-            )
-        except aiohttp.ClientError as err:
-            raise UpdateFailed(
-                f"Verbindung zum Wechselrichter fehlgeschlagen: {err}"
-            ) from err
-        except TimeoutError as err:
-            raise UpdateFailed(
-                "Zeitüberschreitung beim Abfragen des Wechselrichters"
-            ) from err
+        # Nacheinander statt parallel abfragen: die Webserver der alten
+        # Piko-Serie sind sehr schwach und brechen bei parallelen Requests
+        # gerne mit Timeouts/Resets ab. Ein fehlgeschlagener Block darf nicht
+        # alle anderen Werte mitreissen.
+        last_error: Exception | None = None
+        for chunk in chunks:
+            try:
+                entries = await self._fetch_chunk(chunk)
+            except (aiohttp.ClientError, TimeoutError, ValueError) as err:
+                _LOGGER.debug("Abfrage eines DXS-Blocks fehlgeschlagen: %r", err)
+                last_error = err
+                continue
 
-        for entries in chunk_results:
             for entry in entries:
                 dxs_id = entry.get("dxsId")
                 if dxs_id is None or "value" not in entry:
                     continue
                 results[dxs_id] = entry["value"]
+
+        if not results and last_error is not None:
+            raise UpdateFailed(
+                f"Verbindung zum Wechselrichter fehlgeschlagen: {last_error!r}"
+            ) from last_error
 
         if not results:
             raise UpdateFailed(
