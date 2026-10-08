@@ -43,7 +43,7 @@ async def _validate_and_get_name(
     session = async_get_clientsession(hass)
     scheme = "https" if use_https else "http"
     url = f"{scheme}://{host}/api/dxs.json"
-    auth = aiohttp.BasicAuth(username, password) if username else None
+    auth = aiohttp.BasicAuth(username, password or "") if username else None
 
     async with asyncio.timeout(10):
         async with session.get(
@@ -52,8 +52,10 @@ async def _validate_and_get_name(
             resp.raise_for_status()
             payload = await resp.json(content_type=None)
 
+    if not isinstance(payload, dict):
+        raise aiohttp.ClientError("Unerwartete Antwort vom Wechselrichter")
     entries = payload.get("dxsEntries") or []
-    if entries and "value" in entries[0]:
+    if entries and isinstance(entries[0], dict) and "value" in entries[0]:
         return str(entries[0]["value"])
     return "Kostal Piko"
 
@@ -82,7 +84,7 @@ class KostalPikoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = (
                     "invalid_auth" if err.status in (401, 403) else "cannot_connect"
                 )
-            except (aiohttp.ClientError, TimeoutError):
+            except (aiohttp.ClientError, TimeoutError, ValueError):
                 errors["base"] = "cannot_connect"
             except Exception:  # noqa: BLE001
                 _LOGGER.exception("Unerwarteter Fehler beim Verbindungstest")

@@ -44,7 +44,7 @@ class KostalPikoCoordinator(DataUpdateCoordinator[dict[int, Any]]):
         self._session = async_get_clientsession(hass)
         scheme = "https" if use_https else "http"
         self._base_url = f"{scheme}://{host}/api/dxs.json"
-        self._auth = aiohttp.BasicAuth(username, password) if username else None
+        self._auth = aiohttp.BasicAuth(username, password or "") if username else None
 
     async def _fetch_chunk(self, chunk: list[int]) -> list[dict[str, Any]]:
         params = [("dxsEntries", str(dxs_id)) for dxs_id in chunk]
