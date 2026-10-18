@@ -37,7 +37,7 @@ async def async_setup_entry(
 
     device_info = DeviceInfo(
         identifiers={(DOMAIN, entry.entry_id)},
-        name=entry.title or model,
+        name=f"Kostal {model}",
         manufacturer=MANUFACTURER,
         model=model,
         configuration_url=f"http://{entry.data[CONF_HOST]}",

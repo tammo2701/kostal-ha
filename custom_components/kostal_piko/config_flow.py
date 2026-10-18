@@ -55,11 +55,14 @@ class KostalPikoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
+            host = user_input[CONF_HOST].strip()
+            user_input[CONF_HOST] = host
+            await self.async_set_unique_id(host.lower())
+            self._abort_if_unique_id_configured()
             try:
                 name = await _validate_and_get_name(
                     self.hass,
-                    user_input[CONF_HOST],
+                    host,
                     user_input[CONF_USE_HTTPS],
                     user_input.get(CONF_USERNAME) or None,
                     user_input.get(CONF_PASSWORD) or None,
@@ -74,7 +77,9 @@ class KostalPikoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unerwarteter Fehler beim Verbindungstest")
                 errors["base"] = "unknown"
             else:
-                return self.async_create_entry(title=name, data=user_input)
+                return self.async_create_entry(
+                    title=f"{name} ({host})", data=user_input
+                )
 
         data_schema = vol.Schema(
             {

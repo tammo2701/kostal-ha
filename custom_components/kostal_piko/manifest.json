@@ -1,6 +1,6 @@
 {
   "domain": "kostal_piko",
-  "name": "Kostal Piko (alte Serie / PIKO 10.1)",
+  "name": "Kostal PIKO Solar",
   "codeowners": ["@tammo2701"],
   "config_flow": true,
   "documentation": "https://github.com/tammo2701/kostal-ha",
@@ -8,5 +8,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/tammo2701/kostal-ha/issues",
   "requirements": [],
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

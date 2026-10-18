@@ -2,13 +2,13 @@
   "config": {
     "step": {
       "user": {
-        "title": "Kostal Piko Wechselrichter verbinden",
-        "description": "IP-Adresse oder Hostnamen des Wechselrichters eingeben. Benutzername/Passwort sind optional und werden nur für erweiterte Werte benötigt (Werksvorgabe: Benutzername „{default_username}“, Passwort „{default_password}“).",
+        "title": "Kostal PIKO Solar verbinden",
+        "description": "IP-Adresse des PIKO-Wechselrichters eingeben. Die Zugangsdaten des PV Webservers sind werkseitig Benutzername „{default_username}“ und Passwort „{default_password}“.",
         "data": {
           "host": "IP-Adresse oder Hostname",
           "use_https": "HTTPS verwenden",
-          "username": "Benutzername (optional)",
-          "password": "Passwort (optional)",
+          "username": "Benutzername",
+          "password": "Passwort",
           "scan_interval": "Abfrageintervall (Sekunden)"
         }
       }

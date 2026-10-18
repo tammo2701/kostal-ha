@@ -2,13 +2,13 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect Kostal Piko inverter",
-        "description": "Enter the IP address or hostname of the inverter. Username/password are optional and only needed for extended values (factory default: username \"{default_username}\", password \"{default_password}\").",
+        "title": "Connect Kostal PIKO Solar",
+        "description": "Enter the IP address of the PIKO inverter. The factory credentials of the PV Webserver are username \"{default_username}\" and password \"{default_password}\".",
         "data": {
           "host": "IP address or hostname",
           "use_https": "Use HTTPS",
-          "username": "Username (optional)",
-          "password": "Password (optional)",
+          "username": "Username",
+          "password": "Password",
           "scan_interval": "Polling interval (seconds)"
         }
       }

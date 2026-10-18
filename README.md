@@ -1,140 +1,113 @@
-# Kostal Piko – Home Assistant Integration (alte Serie, inkl. PIKO 10.1)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/tammo2701/kostal-ha/main/assets/banner.png" alt="Kostal PIKO Solar – Home Assistant Integration" width="100%">
+</p>
 
-Custom-Integration für Home Assistant, die Wechselrichter der **alten**
-Kostal-Piko-Serie (nicht Plenticore!) ausliest. Diese Geräte (z. B. PIKO 10.1
-mit "PV Webserver") haben keine JSON-Schnittstelle; die Integration liest
-die Statusseite des Wechselrichters aus (HTTP Basic Auth, Standard
-`pvserver` / `pvwr`).
+<p align="center">
+  <a href="https://github.com/tammo2701/kostal-ha/releases"><img alt="Release" src="https://img.shields.io/github/v/release/tammo2701/kostal-ha?style=for-the-badge&color=ffb703"></a>
+  <a href="https://hacs.xyz"><img alt="HACS Custom" src="https://img.shields.io/badge/HACS-Custom-41bdf5?style=for-the-badge"></a>
+  <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.1%2B-18bcf2?style=for-the-badge">
+  <img alt="IoT class" src="https://img.shields.io/badge/lokal-ohne%20Cloud-2ea44f?style=for-the-badge">
+</p>
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tammo2701&repository=kostal-ha&category=integration)
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal_piko)
+# Kostal PIKO Solar
 
-> **Hinweis:** HACS braucht ein öffentliches GitHub-Repository mit mindestens
-> einem Release/Tag (z. B. `v1.0.0`), sonst taucht nichts zum Herunterladen auf.
+Home-Assistant-Integration für **ältere Kostal-PIKO-Wechselrichter mit „PV Webserver“** – getestet mit dem **PIKO 10.1**. Die Werte werden lokal und ohne Cloud direkt vom Wechselrichter gelesen.
+
+<p align="center">
+  <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=tammo2701&repository=kostal-ha&category=integration"><img alt="In HACS öffnen" src="https://my.home-assistant.io/badges/hacs_repository.svg"></a>
+  &nbsp;
+  <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal_piko"><img alt="Integration hinzufügen" src="https://my.home-assistant.io/badges/config_flow_start.svg"></a>
+</p>
+
+---
+
+## Das bekommst du
+
+| | |
+|---|---|
+| **Leistung** | AC-Ausgangsleistung, DC-Gesamtleistung |
+| **Ertrag** | Tagesertrag und Gesamtertrag – direkt nutzbar im **Energie-Dashboard** |
+| **Status** | Betriebsstatus des Wechselrichters (z. B. „Einspeisen MPP“) |
+| **DC-Strings** | Spannung, Strom und Leistung je String (bis zu 3) |
+| **AC-Phasen** | Spannung und Leistung je Phase L1 bis L3 |
+| **Lokal** | Reiner Lesezugriff über das Heimnetz, keine Cloud, kein Konto |
+
+Sensoren werden nur für die Werte angelegt, die dein Gerät tatsächlich anzeigt.
 
 ## Kompatibilität
 
-Unterstützt werden Kostal-Piko-Wechselrichter mit "PV Webserver"
-(Startseite mit Titel "PV Webserver" und Login), getestet mit:
+Die Integration funktioniert mit PIKO-Wechselrichtern, deren Startseite den Titel **„PV Webserver“** trägt und per Login (HTTP Basic Auth) geschützt ist.
 
-- **PIKO 10.1** (Hauptzielgerät dieser Integration)
+- ✅ **PIKO 10.1** (getestet)
+- ❌ **PIKO IQ / Plenticore** – dafür gibt es die offizielle Home-Assistant-Integration „Kostal Plenticore“
 
-**Nicht unterstützt:** Kostal **Plenticore** (Hybridwechselrichter). Dafür
-gibt es die offizielle, in Home Assistant Core enthaltene „Kostal
-Plenticore Core“-Integration, die ein anderes Protokoll (pykoplenti)
-verwendet.
-
-Ob dein Gerät unterstützt wird, kannst du vorab im Browser testen:
-
-```
-http://<IP-DEINES-WECHSELRICHTERS>/
-```
-
-Nach Eingabe von Benutzer `pvserver` und Passwort `pvwr` sollte eine
-Statusseite mit AC-Leistung, Energie und PV-Generator-Werten erscheinen.
-
-## Funktionsweise
-
-Die Integration lädt in jedem Abfrage-Intervall die Startseite des
-Wechselrichters und liest daraus aus: AC-Leistung, Tages- und Gesamtertrag,
-Betriebsstatus, Spannung/Strom/Leistung je DC-String sowie Spannung und
-Leistung je AC-Phase. Nur für die Werte, die dein Gerät anzeigt, werden
-Sensoren angelegt.
-
-Die Schnittstelle ist **reine Lesezugriff (read-only)**: Die alte Piko-Serie
-bietet über diese API keine Steuerbefehle (kein Schreiben von Leistungs-
-begrenzung o. ä.), daher enthält diese Integration bewusst keine
-Switch-/Number-Entities.
-
-## Enthaltene Sensoren (Auswahl, je nach Gerät)
-
-| Bereich | Sensoren |
-|---|---|
-| Übersicht | AC-Ausgangsleistung, DC-Gesamtleistung, Eigenverbrauch aktuell, Betriebsstatus |
-| Statistik heute | Ertrag, Hausverbrauch, Eigenverbrauch, Eigenverbrauchsquote, Autarkiegrad |
-| Statistik gesamt | Ertrag, Hausverbrauch, Eigenverbrauch, Eigenverbrauchsquote, Autarkiegrad, Betriebszeit |
-| DC-Strings 1–3 | Spannung, Strom, Leistung je String |
-| AC-Netz | Netzfrequenz, cos(phi), Spannung/Strom/Leistung je Phase L1–L3 |
-| Hausverbrauch | aus PV, aus Batterie, aus Netz, je Phase |
-
-Ertrags-Sensoren (heute/gesamt) sind als `total_increasing` markiert und
-eignen sich damit direkt für das **Energie-Dashboard** von Home Assistant.
+**Schnelltest:** Öffne `http://<IP-DES-WECHSELRICHTERS>/` im Browser und melde dich mit Benutzer `pvserver` und Passwort `pvwr` an. Siehst du eine Seite mit AC-Leistung, Energie und PV-Generator, passt die Integration.
 
 ## Installation
 
+### Über HACS (empfohlen)
+
+1. In HACS oben rechts auf **⋮ → Benutzerdefinierte Repositories** gehen.
+2. URL `https://github.com/tammo2701/kostal-ha` einfügen, Kategorie **Integration** wählen, **Hinzufügen**.
+3. **Kostal PIKO Solar** in HACS öffnen und herunterladen.
+4. Home Assistant **neu starten**.
+
 ### Manuell
 
-1. Ordner `custom_components/kostal_piko` in das `custom_components`-
-   Verzeichnis deiner Home-Assistant-Konfiguration kopieren (Endstruktur:
-   `config/custom_components/kostal_piko/...`).
-2. Home Assistant neu starten.
-3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** →
-   „Kostal Piko“ suchen.
-
-### Über HACS (Custom Repository)
-
-#### Voraussetzungen
-
-HACS kann **nur echte, öffentliche GitHub-Repositories** laden. Die
-Buttons/Links oben funktionieren also erst, nachdem:
-
-1. Du ein eigenes **öffentliches** GitHub-Repository angelegt hast
-   (z. B. `ha-kostal-piko`).
-2. Der komplette Inhalt dieses ZIPs (inkl. `custom_components/kostal_piko/…`
-   und `hacs.json` im Repo-Root) dort hochgeladen/gepusht wurde.
-3. Du im Repo unter **Releases** mindestens **einen Release/Tag** erstellt
-   hast (z. B. `v1.0.0`). Ohne Release zeigt HACS das Repository zwar an,
-   aber es taucht nichts zum Herunterladen auf bzw. der Download-Button
-   bleibt inaktiv – das ist die häufigste Ursache für „es passiert nichts“.
-4. Optional: `codeowners`, `documentation` und `issue_tracker` in
-   `custom_components/kostal_piko/manifest.json` sowie die Owner/Repository-
-   Angaben in den Badges oben an deinen echten GitHub-Namen anpassen.
-
-#### Installation
-
-1. Ersten Badge-Link oben anklicken **oder** manuell: HACS → Menü (⋮
-   oben rechts) → „Benutzerdefinierte Repositories“ → URL
-   `https://github.com/tammo2701/kostal-ha` einfügen, Kategorie
-   **„Integration“** wählen, „Hinzufügen“ klicken.
-2. Das Repository in der HACS-Liste suchen/öffnen und über den
-   Download-Button (unten rechts) installieren.
-3. Home Assistant neu starten.
-4. Zweiten Badge-Link oben anklicken **oder** manuell: **Einstellungen →
-   Geräte & Dienste → Integration hinzufügen** → „Kostal Piko“ suchen.
-
-Falls du keine eigene GitHub-Veröffentlichung möchtest, überspringe HACS
-komplett und nutze die manuelle Installation oben – das Ergebnis ist
-funktional identisch, nur ohne automatische Update-Benachrichtigung.
+1. Den Ordner `custom_components/kostal_piko` nach `config/custom_components/kostal_piko` kopieren.
+2. Home Assistant **neu starten**.
 
 ## Einrichtung
 
-Im Einrichtungsdialog werden abgefragt:
+**Einstellungen → Geräte & Dienste → Integration hinzufügen → „Kostal PIKO Solar“**
 
-- **IP-Adresse/Hostname** des Wechselrichters (erforderlich)
-- **HTTPS verwenden** (optional, Standard: aus)
-- **Benutzername/Passwort** (optional). Für einige zusätzliche Werte
-  verlangt die Firmware eine Anmeldung. Kostal vergibt werkseitig
-  Benutzername `pvserver` und Passwort `pvwr` – bitte in den
-  Wechselrichter-Einstellungen ändern und hier entsprechend eintragen.
-- **Abfrageintervall** in Sekunden (Standard: 30, Minimum: 10 – ein zu
-  kurzes Intervall kann ältere Wechselrichter überlasten).
+| Feld | Bedeutung | Vorgabe |
+|---|---|---|
+| IP-Adresse oder Hostname | Adresse des Wechselrichters im Heimnetz | – |
+| HTTPS verwenden | Nur aktivieren, wenn dein Gerät HTTPS anbietet | aus |
+| Benutzername | Login des PV Webservers | `pvserver` |
+| Passwort | Login des PV Webservers | `pvwr` |
+| Abfrageintervall | Sekunden zwischen zwei Abfragen (mindestens 10) | 30 |
 
-Das Abfrageintervall lässt sich später jederzeit über die
-Integrations-Optionen anpassen.
+Das Abfrageintervall kann später in den Optionen der Integration geändert werden. Ein zu kurzes Intervall kann den schwachen Webserver älterer Geräte überlasten.
+
+## Entitäten
+
+| Sensor | Einheit | Hinweis |
+|---|---|---|
+| AC-Ausgangsleistung | W | |
+| DC-Gesamtleistung | W | Summe der Stringleistungen |
+| Ertrag heute | Wh | setzt sich täglich zurück |
+| Ertrag gesamt | kWh | steigt dauerhaft |
+| Betriebsstatus | Text | z. B. „Einspeisen MPP“ |
+| DC String 1–3 Spannung | V | Diagnose |
+| DC String 1–3 Strom | A | Diagnose |
+| DC String 1–3 Leistung | W | berechnet aus Spannung × Strom |
+| AC Phase 1–3 Spannung | V | Diagnose |
+| AC Phase 1–3 Leistung | W | Diagnose |
+
+> Die Statusseite des Geräts zeigt keinen Strom pro AC-Phase und keinen Hausverbrauch. Dafür gibt es deshalb keine Sensoren.
+
+### Energie-Dashboard
+
+Unter **Einstellungen → Dashboards → Energie → Solarmodule hinzufügen** den Sensor **Ertrag gesamt** auswählen.
 
 ## Fehlerbehebung
 
-- „Verbindung fehlgeschlagen“: IP-Adresse prüfen, obigen Browser-Test
-  durchführen, ggf. Firewall/VLAN zwischen Home Assistant und Wechselrichter
-  prüfen.
-- „Anmeldedaten abgelehnt“: Benutzername/Passwort leer lassen oder die
-  tatsächlich am Gerät hinterlegten Zugangsdaten eintragen.
-- Es fehlen einzelne Sensoren (z. B. String 3 oder Batteriewerte): Diese
-  DXS-IDs liefert dein Gerät nicht – das ist normal und modellabhängig.
+| Problem | Lösung |
+|---|---|
+| „Verbindung zum Wechselrichter konnte nicht hergestellt werden“ | IP-Adresse prüfen, Schnelltest im Browser machen, Netzwerk/VLAN zwischen Home Assistant und Wechselrichter prüfen. |
+| „Anmeldedaten wurden abgelehnt“ | Benutzername und Passwort des PV Webservers prüfen (Werksvorgabe `pvserver` / `pvwr`). |
+| „Invalid handler specified“ | Home Assistant nach der Installation oder dem Update **komplett neu starten**. |
+| Integration erscheint doppelt | Doppelten Eintrag unter **Geräte & Dienste** entfernen und die Integration einmal neu hinzufügen. |
+| Sensoren zeitweise „nicht verfügbar“ | Der Webserver des Wechselrichters antwortet nicht immer, etwa bei Standby. Die Werte kommen von selbst zurück. Bei häufigen Aussetzern das Abfrageintervall erhöhen. |
 
-## Haftungsausschluss
+Für Fehlermeldungen im Log hilft die Suche nach `kostal` unter **Einstellungen → System → Protokolle**. Fehler und Wünsche gern als [Issue](https://github.com/tammo2701/kostal-ha/issues) melden.
 
-Diese Integration nutzt eine von Kostal nicht offiziell dokumentierte
-Schnittstelle, die auf Community-Recherchen (u. a. Tafkas, klausenbusk,
-msxfaq.de, openWB-Forum) beruht. Funktionsumfang und Feldnamen können sich
-je nach Firmware-Version unterscheiden.
+## So funktioniert es
+
+Der PIKO 10.1 hat keine JSON-Schnittstelle. Die Integration lädt deshalb bei jeder Abfrage die Startseite des PV Webservers (eine einzige Anfrage, mit Login) und liest die Werte aus der HTML-Tabelle. Es werden keine Daten an den Wechselrichter geschrieben.
+
+## Hinweis
+
+Inoffizielles Community-Projekt, nicht von Kostal. Der Seitenaufbau kann je nach Firmware-Version abweichen.
