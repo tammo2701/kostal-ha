@@ -1,8 +1,10 @@
 # Kostal Piko – Home Assistant Integration (alte Serie, inkl. PIKO 10.1)
 
 Custom-Integration für Home Assistant, die Wechselrichter der **alten**
-Kostal-Piko-Serie (nicht Plenticore!) über deren lokale, unauthentifizierte
-JSON-Schnittstelle `/api/dxs.json` ausliest.
+Kostal-Piko-Serie (nicht Plenticore!) ausliest. Diese Geräte (z. B. PIKO 10.1
+mit "PV Webserver") haben keine JSON-Schnittstelle; die Integration liest
+die Statusseite des Wechselrichters aus (HTTP Basic Auth, Standard
+`pvserver` / `pvwr`).
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tammo2701&repository=kostal-ha&category=integration)
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kostal_piko)
@@ -12,12 +14,10 @@ JSON-Schnittstelle `/api/dxs.json` ausliest.
 
 ## Kompatibilität
 
-Unterstützt werden alle Kostal-Piko-Wechselrichter mit Webserver-Version
-≥ 6.00, u. a.:
+Unterstützt werden Kostal-Piko-Wechselrichter mit "PV Webserver"
+(Startseite mit Titel "PV Webserver" und Login), getestet mit:
 
 - **PIKO 10.1** (Hauptzielgerät dieser Integration)
-- PIKO 4.2, 5.5, 7.2, 8.3, 9.3, 10, 12, 15, 17, 20, 36
-- PIKO BA-Varianten (mit Batteriewerten, sofern vom Gerät geliefert)
 
 **Nicht unterstützt:** Kostal **Plenticore** (Hybridwechselrichter). Dafür
 gibt es die offizielle, in Home Assistant Core enthaltene „Kostal
@@ -27,21 +27,19 @@ verwendet.
 Ob dein Gerät unterstützt wird, kannst du vorab im Browser testen:
 
 ```
-http://<IP-DEINES-WECHSELRICHTERS>/api/dxs.json?dxsEntries=16777984
+http://<IP-DEINES-WECHSELRICHTERS>/
 ```
 
-Kommt eine JSON-Antwort mit dem Namen deines Wechselrichters zurück
-(`{"dxsEntries":[{"dxsId":16777984,"value":"..."}], ...}`), funktioniert
-die Integration.
+Nach Eingabe von Benutzer `pvserver` und Passwort `pvwr` sollte eine
+Statusseite mit AC-Leistung, Energie und PV-Generator-Werten erscheinen.
 
 ## Funktionsweise
 
-Alle paar Sekunden fragt die Integration in einem Rutsch ca. 35 bekannte
-„DXS-IDs“ des Wechselrichters ab (Momentanleistungen, Tages-/Gesamtertrag,
-Spannungen/Ströme je String und Netzphase, Eigenverbrauch, Autarkiegrad,
-Betriebsstatus usw.). Beim ersten Abruf wird automatisch erkannt, welche
-Werte dein konkretes Gerät liefert (z. B. 2 statt 3 DC-Strings, mit/ohne
-Batteriewerte) – nur dafür werden dann auch Sensoren angelegt.
+Die Integration lädt in jedem Abfrage-Intervall die Startseite des
+Wechselrichters und liest daraus aus: AC-Leistung, Tages- und Gesamtertrag,
+Betriebsstatus, Spannung/Strom/Leistung je DC-String sowie Spannung und
+Leistung je AC-Phase. Nur für die Werte, die dein Gerät anzeigt, werden
+Sensoren angelegt.
 
 Die Schnittstelle ist **reine Lesezugriff (read-only)**: Die alte Piko-Serie
 bietet über diese API keine Steuerbefehle (kein Schreiben von Leistungs-

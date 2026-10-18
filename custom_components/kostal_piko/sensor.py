@@ -13,7 +13,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     DOMAIN,
-    DXS_INVERTER_NAME,
     KostalPikoSensorDescription,
     MANUFACTURER,
     SENSOR_DESCRIPTIONS,
@@ -34,22 +33,20 @@ async def async_setup_entry(
     Batterie) an."""
     coordinator: KostalPikoCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    device_name = entry.title
-    if coordinator.data and DXS_INVERTER_NAME in coordinator.data:
-        device_name = str(coordinator.data[DXS_INVERTER_NAME])
+    model = (coordinator.data or {}).get("model") or "PIKO"
 
     device_info = DeviceInfo(
         identifiers={(DOMAIN, entry.entry_id)},
-        name=device_name or "Kostal Piko",
+        name=entry.title or model,
         manufacturer=MANUFACTURER,
-        model="PIKO",
+        model=model,
         configuration_url=f"http://{entry.data[CONF_HOST]}",
     )
 
     entities = [
         KostalPikoSensor(coordinator, description, entry.entry_id, device_info)
         for description in SENSOR_DESCRIPTIONS
-        if coordinator.data and description.dxs_id in coordinator.data
+        if coordinator.data and description.key in coordinator.data
     ]
 
     if not entities:
@@ -83,21 +80,12 @@ class KostalPikoSensor(CoordinatorEntity[KostalPikoCoordinator], SensorEntity):
 
     @property
     def native_value(self):
-        raw = self.coordinator.data.get(self.entity_description.dxs_id)
-        if raw is None:
-            return None
-        value_fn = self.entity_description.value_fn
-        if value_fn is not None:
-            try:
-                return value_fn(raw)
-            except (TypeError, ValueError):
-                return None
-        return raw
+        return self.coordinator.data.get(self.entity_description.key)
 
     @property
     def available(self) -> bool:
         return (
             super().available
             and self.coordinator.data is not None
-            and self.entity_description.dxs_id in self.coordinator.data
+            and self.entity_description.key in self.coordinator.data
         )

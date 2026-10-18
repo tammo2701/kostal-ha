@@ -5,7 +5,6 @@ import logging
 from typing import Any
 
 import aiohttp
-import asyncio
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -25,9 +24,9 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_USERNAME,
     DOMAIN,
-    DXS_INVERTER_NAME,
     MIN_SCAN_INTERVAL,
 )
+from .coordinator import async_fetch_status
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,25 +38,10 @@ async def _validate_and_get_name(
     username: str | None,
     password: str | None,
 ) -> str:
-    """Prüft die Erreichbarkeit und liest den vom WR gemeldeten Namen aus."""
+    """Prüft Erreichbarkeit und Login und liest das Modell des WR aus."""
     session = async_get_clientsession(hass)
-    scheme = "https" if use_https else "http"
-    url = f"{scheme}://{host}/api/dxs.json"
-    auth = aiohttp.BasicAuth(username, password or "") if username else None
-
-    async with asyncio.timeout(10):
-        async with session.get(
-            url, params={"dxsEntries": DXS_INVERTER_NAME}, auth=auth, ssl=False
-        ) as resp:
-            resp.raise_for_status()
-            payload = await resp.json(content_type=None)
-
-    if not isinstance(payload, dict):
-        raise aiohttp.ClientError("Unerwartete Antwort vom Wechselrichter")
-    entries = payload.get("dxsEntries") or []
-    if entries and isinstance(entries[0], dict) and "value" in entries[0]:
-        return str(entries[0]["value"])
-    return "Kostal Piko"
+    data = await async_fetch_status(session, host, use_https, username, password)
+    return data.get("model") or "Kostal Piko"
 
 
 class KostalPikoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -96,8 +80,8 @@ class KostalPikoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(CONF_HOST): str,
                 vol.Optional(CONF_USE_HTTPS, default=False): bool,
-                vol.Optional(CONF_USERNAME, default=""): str,
-                vol.Optional(CONF_PASSWORD, default=""): str,
+                vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): str,
+                vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): str,
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
                 ): vol.All(int, vol.Range(min=MIN_SCAN_INTERVAL)),
